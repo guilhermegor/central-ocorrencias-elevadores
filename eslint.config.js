@@ -60,6 +60,11 @@ export default [
   ...tseslint.configs.recommended,
 
   {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: { globals: globals.node },
+  },
+
+  {
     files: ['**/*.cjs'],
     languageOptions: {
       sourceType: 'commonjs',
