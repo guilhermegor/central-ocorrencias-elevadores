@@ -59,6 +59,26 @@ describe('sortByUrgency', () => {
       'low',
     ]);
   });
+
+  it('breaks a priority tie by elevator recurrence before waiting time', () => {
+    const repeat = buildIncident({ id: 'repeat', elevatorId: 'EL-09' });
+    const oneOff = buildIncident({
+      id: 'one-off',
+      elevatorId: 'EL-01',
+      openedAt: '2026-11-01T00:00:00.000Z',
+    });
+    const history = [repeat, oneOff, buildIncident({ id: 'past', elevatorId: 'EL-09' })];
+    const sorted = sortByUrgency([oneOff, repeat], history);
+    expect(sorted.map((incident) => incident.id)).toEqual(['repeat', 'one-off']);
+  });
+
+  it('keeps a critical incident above a more recurrent elevator', () => {
+    const critical = buildIncident({ id: 'critical', priority: IncidentPriority.Critical });
+    const recurrent = buildIncident({ id: 'recurrent', elevatorId: 'EL-09' });
+    const history = [critical, recurrent, recurrent, recurrent];
+    const sorted = sortByUrgency([recurrent, critical], history);
+    expect(sorted.map((incident) => incident.id)).toEqual(['critical', 'recurrent']);
+  });
 });
 
 describe('buildQueue', () => {

@@ -23,12 +23,15 @@ export const DEFAULT_QUEUE_FILTERS: QueueFilters = {
   search: '',
 };
 
-export function sortByUrgency<T extends Pick<Incident, 'priority' | 'openedAt'>>(
+export function sortByUrgency<T extends Pick<Incident, 'priority' | 'openedAt' | 'elevatorId'>>(
   incidents: T[],
+  history: Pick<Incident, 'elevatorId'>[] = incidents,
 ): T[] {
+  const recurrence = countByElevator(history);
   return [...incidents].sort(
     (first, second) =>
       PRIORITY_RANK[second.priority] - PRIORITY_RANK[first.priority] ||
+      recurrence[second.elevatorId] - recurrence[first.elevatorId] ||
       first.openedAt.localeCompare(second.openedAt),
   );
 }
@@ -49,8 +52,11 @@ export function filterIncidents(
   );
 }
 
-export function buildQueue(incidents: IncidentResponseDTO[]): IncidentResponseDTO[] {
-  const active = sortByUrgency(incidents.filter(isActive));
+export function buildQueue(
+  incidents: IncidentResponseDTO[],
+  history: IncidentResponseDTO[] = incidents,
+): IncidentResponseDTO[] {
+  const active = sortByUrgency(incidents.filter(isActive), history);
   const closed = incidents
     .filter((incident) => !isActive(incident))
     .sort((first, second) => second.openedAt.localeCompare(first.openedAt));
@@ -75,6 +81,12 @@ export function nextIncidentCode(incidents: Pick<Incident, 'code'>[]): string {
     0,
   );
   return formatIncidentCode(highest + 1);
+}
+
+function countByElevator(history: Pick<Incident, 'elevatorId'>[]): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const { elevatorId } of history) counts[elevatorId] = (counts[elevatorId] ?? 0) + 1;
+  return counts;
 }
 
 function matches<T extends string>(filter: T | typeof ALL, value: T): boolean {
