@@ -14,7 +14,7 @@ export function QueuePage() {
   const { incidents, elevators, technicians, error } = useIncidentContext();
   const [filters, setFilters] = useState(DEFAULT_QUEUE_FILTERS);
   const queue = useMemo(
-    () => buildQueue(filterIncidents(incidents, filters)),
+    () => buildQueue(filterIncidents(incidents, filters), incidents),
     [incidents, filters],
   );
   const freeTechnicians = useMemo(
@@ -43,7 +43,8 @@ export function QueuePage() {
         }
       />
       <p className={styles.muted}>
-        {queue.length} ocorrência(s) · ativas primeiro, por prioridade e tempo de espera
+        {queue.length} ocorrência(s) · ativas primeiro, por prioridade, reincidência do elevador e
+        tempo de espera
       </p>
       <ul className={styles.list}>
         {queue.map((incident) => (

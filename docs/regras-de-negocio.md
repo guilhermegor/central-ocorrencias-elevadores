@@ -12,8 +12,11 @@ O tipo da ocorrência define a prioridade inicial (`domain/priority.ts`):
 | Outro | Média | Precisa de análise humana |
 | Solicitação de cliente | Baixa | Pedido administrativo ou preventivo |
 
-A fila ordena por prioridade (mais urgente primeiro) e, dentro da mesma prioridade, por
-quem espera há mais tempo. Ocorrências encerradas vêm depois, da mais recente para a mais
+A fila ordena por prioridade (mais urgente primeiro, definida pelo tipo). Dentro da mesma
+prioridade, vem primeiro o elevador mais reincidente (mais ocorrências na base inteira,
+abertas ou encerradas, independentemente do filtro aplicado na tela) e, depois, quem espera
+há mais tempo. A reincidência só desempata: um passageiro preso em um elevador sem
+histórico continua acima de uma falha técnica no elevador mais problemático. Ocorrências encerradas vêm depois, da mais recente para a mais
 antiga.
 
 ## Ciclo de vida

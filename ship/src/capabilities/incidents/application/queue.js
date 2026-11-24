@@ -10,10 +10,12 @@ export const DEFAULT_QUEUE_FILTERS = {
   elevatorId: ALL,
   search: '',
 };
-export function sortByUrgency(incidents) {
+export function sortByUrgency(incidents, history = incidents) {
+  const recurrence = countByElevator(history);
   return [...incidents].sort(
     (first, second) =>
       PRIORITY_RANK[second.priority] - PRIORITY_RANK[first.priority] ||
+      recurrence[second.elevatorId] - recurrence[first.elevatorId] ||
       first.openedAt.localeCompare(second.openedAt),
   );
 }
@@ -29,8 +31,8 @@ export function filterIncidents(incidents, filters) {
     ].every(Boolean),
   );
 }
-export function buildQueue(incidents) {
-  const active = sortByUrgency(incidents.filter(isActive));
+export function buildQueue(incidents, history = incidents) {
+  const active = sortByUrgency(incidents.filter(isActive), history);
   const closed = incidents
     .filter((incident) => !isActive(incident))
     .sort((first, second) => second.openedAt.localeCompare(first.openedAt));
@@ -50,6 +52,11 @@ export function nextIncidentCode(incidents) {
     0,
   );
   return formatIncidentCode(highest + 1);
+}
+function countByElevator(history) {
+  const counts = {};
+  for (const { elevatorId } of history) counts[elevatorId] = (counts[elevatorId] ?? 0) + 1;
+  return counts;
 }
 function matches(filter, value) {
   return filter === ALL || filter === value;
