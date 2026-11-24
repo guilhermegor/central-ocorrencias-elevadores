@@ -1,5 +1,3 @@
-Review threads answered
-
 webpack
 eslint
 stylelint
