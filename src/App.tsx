@@ -1,10 +1,10 @@
-import { NoteProvider } from '@/capabilities/example';
+import { IncidentProvider } from '@/capabilities/incidents';
 import { MainRouter } from '@/routes/MainRouter';
 
 const App = () => (
-  <NoteProvider>
+  <IncidentProvider>
     <MainRouter />
-  </NoteProvider>
+  </IncidentProvider>
 );
 
 export default App;
