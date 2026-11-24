@@ -24,9 +24,13 @@ require_inputs() {
 }
 
 build_mvp() {
-    local work_dir="$1"
     print_status "info" "1/3 Gerando o MVP em JavaScript puro (ship/)..."
     (cd "$REPO_DIR" && npm run -s delivery)
+}
+
+zip_mvp() {
+    local work_dir="$1"
+    cp "$REPO_DIR/$NAME.pdf" "$REPO_DIR/ship/$NAME.pdf"
     (cd "$REPO_DIR" && zip -qr "$work_dir/$MVP_ZIP" ship -x 'ship/node_modules/*')
 }
 
@@ -93,11 +97,13 @@ main() {
     require_inputs
     WORK_DIR="$(mktemp -d)"
     trap 'rm -rf "$WORK_DIR"' EXIT
-    build_mvp "$WORK_DIR"
+    build_mvp
     write_html "$video_url" "$WORK_DIR/entrega.html"
     render_pdf "$WORK_DIR/entrega.html" "$REPO_DIR/$NAME.pdf"
+    zip_mvp "$WORK_DIR"
     pack_zip "$WORK_DIR"
     print_status "success" "PDF: $REPO_DIR/$NAME.pdf"
+    print_status "success" "PDF: $REPO_DIR/ship/$NAME.pdf"
     print_status "success" "ZIP: $REPO_DIR/$NAME.zip"
 }
 

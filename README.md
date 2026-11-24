@@ -214,10 +214,12 @@ bin/gerar_entrega.sh "https://youtu.be/<link-do-video>"
 ```
 
 O script lê os integrantes de `integrantes.txt` na raiz, uma linha `Nome completo;RM`
-por pessoa. Esse arquivo, `Grupo79-Challenge-OTIS-Sprint2.pdf` e
+por pessoa. O PDF `Grupo79-Challenge-OTIS-Sprint2.pdf` sai em dois lugares, na raiz e
+dentro de `ship/`. Esse arquivo de integrantes, as duas cópias do PDF e o
 `Grupo79-Challenge-OTIS-Sprint2.zip` são ignorados pelo git: o repositório é público e
 os RMs não podem entrar no histórico. O ZIP final leva o PDF e o MVP zipado (`ship/`,
-com `ship/dist/` já compilado). O script recusa rodar com alterações não commitadas,
+com o PDF e `ship/dist/` já compilado). `npm run ship` recria `ship/` do zero e apaga
+a cópia de lá, então rode o script de novo depois de regenerar `ship/`. O script recusa rodar com alterações não commitadas,
 para a entrega sair igual ao que está no GitHub.
 
 <!-- slug: contributing -->
