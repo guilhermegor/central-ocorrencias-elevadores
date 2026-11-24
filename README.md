@@ -204,6 +204,22 @@ npm run delivery     # ship + build da cópia em ship/dist/ (ignorado pelo git)
 `ship/dist/index.html` abre direto do disco (`file://`, duplo clique): rotas por hash,
 caminhos relativos e CSS em arquivos (`css/`), sem `<style>` embutido.
 
+### Entrega FIAP — PDF e ZIP
+
+O roteiro do vídeo (até 3 min) está em [`docs/roteiro-video.md`](docs/roteiro-video.md).
+Depois de publicar o vídeo, gere o PDF e o ZIP na raiz do projeto:
+
+```bash
+bin/gerar_entrega.sh "https://youtu.be/<link-do-video>"
+```
+
+O script lê os integrantes de `integrantes.txt` na raiz, uma linha `Nome completo;RM`
+por pessoa. Esse arquivo, `Grupo79-Challenge-OTIS-Sprint2.pdf` e
+`Grupo79-Challenge-OTIS-Sprint2.zip` são ignorados pelo git: o repositório é público e
+os RMs não podem entrar no histórico. O ZIP final leva o PDF e o MVP zipado (`ship/`,
+com `ship/dist/` já compilado). O script recusa rodar com alterações não commitadas,
+para a entrega sair igual ao que está no GitHub.
+
 <!-- slug: contributing -->
 ## Contributing
 
