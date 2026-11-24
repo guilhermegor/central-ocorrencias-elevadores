@@ -1,0 +1,9 @@
+:root {
+  --red-400: #f87171;
+  --orange-400: #fb923c;
+
+  --color-priority-critical: var(--red-400);
+  --color-priority-high: var(--orange-400);
+  --color-priority-medium: var(--yellow-400);
+  --color-priority-low: var(--sky-500);
+}
