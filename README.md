@@ -181,24 +181,28 @@ docker run --rm -p 8080:80 central-ocorrencias-elevadores   # → http://localho
 To pin the build to the Node version in `.nvmrc`, add
 `--build-arg NODE_VERSION="$(cat .nvmrc)"`. See `CLAUDE.md → Docker` for details.
 
-### Plain-JavaScript delivery copy (optional)
+### Pasta `ship/` — entrega em JavaScript puro
 
-If you scaffolded with the JS-copy option, `scripts/emit-js-copy.mjs` and
-`scripts/verify-js-copy.mjs` are present. Use this when a delivery must not
-contain TypeScript at all — a course submission, a client handoff, a
-consumer with no TS toolchain. The verify step fails if any `.ts(x)` file, `tsconfig`,
-or a mention of TypeScript in a generated `.md`, `.txt` or `.html` file survived.
+A entrega para a FIAP não pode conter TypeScript. O projeto é desenvolvido em
+TypeScript, e `ship/` guarda a tradução versionada: só arquivos `.js`, `.jsx`,
+`.html` e `.css`, gerados a partir de `src/` e `public/` (testes ficam de fora).
 
 ```bash
-npm run js-copy:build   # strips types with @babel/preset-typescript → js-copy/ # doc-commands:optional
-npm run js-copy:verify  # fails loudly if any TypeScript survived # doc-commands:optional
-npm run js-copy          # both, in order # doc-commands:optional
+npm run ship:build   # remove os tipos com Babel e gera ship/
+npm run ship:verify  # falha se sobrar qualquer arquivo fora de .js/.jsx/.html/.css ou menção a TypeScript
+npm run ship         # os dois, em ordem
 ```
 
-`js-copy/` is a build artifact (git-ignored, excluded from lint) with its own
-generated `webpack.config.js` — build it with `npx webpack --mode production`
-from inside `js-copy/`, resolving `webpack`/`babel-loader` from the parent
-project's `node_modules`.
+Regere `ship/` sempre que mexer em `src/` e commite junto; o CI falha se `ship/`
+estiver desatualizado. A cópia remove só os tipos (o JSX continua legível) e sai sem
+comentários, porque a verificação de orçamento de comentários também lê `ship/`.
+
+```bash
+npm run delivery     # ship + build da cópia em ship/dist/ (ignorado pelo git)
+```
+
+`ship/dist/index.html` abre direto do disco (`file://`, duplo clique): rotas por hash,
+caminhos relativos e CSS em arquivos (`css/`), sem `<style>` embutido.
 
 <!-- slug: contributing -->
 ## Contributing

@@ -1,7 +1,7 @@
 {
   "name": "central-ocorrencias-elevadores",
   "version": "1.0.0",
-  "description": "Registro, classifica\u00e7\u00e3o, prioriza\u00e7\u00e3o e despacho de ocorr\u00eancias de elevadores, com painel de gest\u00e3o (FIAP Challenge OTIS 2026)",
+  "description": "Registro, classificação, priorização e despacho de ocorrências de elevadores, com painel de gestão (FIAP Challenge OTIS 2026)",
   "main": "index.js",
   "type": "module",
   "engines": {
@@ -28,9 +28,10 @@
     "context:export": "bash bin/export_repo_content.sh",
     "repo:rules": "bash bin/enable_repo_rules.sh",
     "repo:rules:verify": "bash bin/enable_repo_rules.sh verify",
-    "js-copy:build": "node scripts/emit-js-copy.mjs",
-    "js-copy:verify": "node scripts/verify-js-copy.mjs",
-    "js-copy": "npm run js-copy:build && npm run js-copy:verify"
+    "ship:build": "node scripts/emit-ship.mjs && prettier --log-level warn --write ship",
+    "ship:verify": "node scripts/verify-ship.mjs",
+    "ship": "npm run ship:build && npm run ship:verify",
+    "delivery": "npm run ship && cross-env NODE_ENV=production webpack --config ship/webpack.config.js --mode production"
   },
   "keywords": [],
   "author": "",
@@ -46,6 +47,7 @@
   },
   "devDependencies": {
     "@babel/core": "^8.0.7",
+    "@babel/plugin-syntax-jsx": "^8.0.1",
     "@babel/preset-env": "^8.0.7",
     "@babel/preset-react": "^8.0.1",
     "@babel/preset-typescript": "^8.0.7",

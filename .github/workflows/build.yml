@@ -21,3 +21,8 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run build
+      - name: ship/ is up to date with src/
+        run: |
+          npm run ship
+          git add -N ship
+          git diff --exit-code -- ship
