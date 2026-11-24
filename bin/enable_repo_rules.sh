@@ -57,13 +57,6 @@ build_rules_json() {
     "require_last_push_approval":false,
     "required_review_thread_resolution":true
   }},
-  {"type":"code_scanning","parameters":{"code_scanning_tools":[
-    {"tool":"CodeQL","security_alerts_threshold":"high_or_higher","alerts_threshold":"errors"}
-  ]}},
-  {"type":"copilot_code_review","parameters":{
-    "review_on_push":true,
-    "review_draft_pull_requests":false
-  }},
   {"type":"non_fast_forward"},
   {"type":"required_linear_history"},
   {"type":"deletion"}${str_checks_rule}
