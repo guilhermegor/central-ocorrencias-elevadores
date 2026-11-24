@@ -7,6 +7,7 @@ const ALLOWED_EXTENSIONS = new Set(['.js', '.jsx', '.html', '.css']);
 const BANNED_FILENAME_RE = /\.tsx?$|^tsconfig.*\.json$/;
 const BANNED_TEXT_RE = /typescript|\.tsx?\b/i;
 const TEXT_DOCUMENT_EXTENSIONS = new Set(['.md', '.txt', '.html']);
+const DELIVERY_DOCUMENT = 'Grupo79-Challenge-OTIS-Sprint2.pdf';
 
 function collectFiles(dir, out = []) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -25,6 +26,7 @@ function findFailures(files) {
   const failures = [];
   for (const filePath of files) {
     const relPath = path.relative(OUT_DIR, filePath);
+    if (relPath === DELIVERY_DOCUMENT) continue;
     if (!ALLOWED_EXTENSIONS.has(path.extname(filePath).toLowerCase())) {
       failures.push(`${relPath}: only .js, .jsx, .html and .css files may be delivered`);
       continue;
