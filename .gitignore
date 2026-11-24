@@ -27,5 +27,4 @@ coverage/
 /.docusaurus/
 /docs-build/
 
-# js-copy delivery script output (npm run js-copy:build)
-/js-copy/
+/ship/dist/

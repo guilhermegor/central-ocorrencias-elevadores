@@ -43,7 +43,7 @@ export default [
   {
     ignores: [
       '**/dist/**',
-      '**/js-copy/**',
+      'ship/**',
       '**/node_modules/**',
       '**/build/**',
       '**/coverage/**',

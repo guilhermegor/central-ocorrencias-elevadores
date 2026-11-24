@@ -2,14 +2,15 @@
 import fs from 'fs';
 import path from 'path';
 
-const OUT_DIR = path.resolve(process.cwd(), 'js-copy');
+const OUT_DIR = path.resolve(process.cwd(), 'ship');
+const ALLOWED_EXTENSIONS = new Set(['.js', '.jsx', '.html', '.css']);
 const BANNED_FILENAME_RE = /\.tsx?$|^tsconfig.*\.json$/;
 const BANNED_TEXT_RE = /typescript|\.tsx?\b/i;
 const TEXT_DOCUMENT_EXTENSIONS = new Set(['.md', '.txt', '.html']);
 
 function collectFiles(dir, out = []) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (entry.name === 'node_modules') continue;
+    if (entry.name === 'node_modules' || entry.name === 'dist') continue;
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       collectFiles(fullPath, out);
@@ -24,6 +25,10 @@ function findFailures(files) {
   const failures = [];
   for (const filePath of files) {
     const relPath = path.relative(OUT_DIR, filePath);
+    if (!ALLOWED_EXTENSIONS.has(path.extname(filePath).toLowerCase())) {
+      failures.push(`${relPath}: only .js, .jsx, .html and .css files may be delivered`);
+      continue;
+    }
     if (BANNED_FILENAME_RE.test(path.basename(filePath))) {
       failures.push(`${relPath}: TypeScript source/config file in a JS-only delivery`);
       continue;
@@ -40,7 +45,7 @@ function findFailures(files) {
 
 function main() {
   if (!fs.existsSync(OUT_DIR)) {
-    console.error(`js-copy verify: ${OUT_DIR} does not exist — run "npm run js-copy:build" first.`);
+    console.error(`ship verify: ${OUT_DIR} does not exist — run "npm run ship:build" first.`);
     process.exit(1);
   }
 
@@ -48,12 +53,12 @@ function main() {
   const failures = findFailures(files);
 
   if (failures.length > 0) {
-    console.error('js-copy verify FAILED:');
+    console.error('ship verify FAILED:');
     for (const failure of failures) console.error(`  - ${failure}`);
     process.exit(1);
   }
 
-  console.log(`js-copy verify OK — ${files.length} files, zero TypeScript surface.`);
+  console.log(`ship verify OK — ${files.length} files, zero TypeScript surface.`);
 }
 
 main();
