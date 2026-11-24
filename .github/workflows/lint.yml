@@ -1,0 +1,48 @@
+name: Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Comment budget ratchet
+        run: python3 bin/check_comment_budget.py --require-baseline
+      - name: AGENTS.md pairing gate
+        run: bash bin/check_agents_md_pairs.sh --root .
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: Documented npm commands exist
+        run: bash bin/check_doc_commands.sh .
+      - run: npm ci
+      - name: Assertion weakening gate
+        run: |
+          gate=$(find src -name assertion-weakening.cjs -print -quit)
+          [ -n "$gate" ] || { echo 'assertion-weakening gate missing' >&2; exit 1; }
+          node "$gate"
+      - run: npm run lint
+
+  stylelint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint:css

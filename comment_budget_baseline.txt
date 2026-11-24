@@ -1,0 +1,3 @@
+scope 2
+base unknown
+1 .gitignore
